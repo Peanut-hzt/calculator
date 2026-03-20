@@ -20,12 +20,43 @@
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
         }
 
-        .calculator {
+        .container {
             background: #fff;
             border-radius: 20px;
             box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
             padding: 20px;
             width: 380px;
+        }
+
+        .tabs {
+            display: flex;
+            background: #f7f9fc;
+            border-radius: 10px;
+            margin-bottom: 15px;
+        }
+
+        .tab {
+            flex: 1;
+            padding: 12px;
+            text-align: center;
+            cursor: pointer;
+            border-radius: 10px;
+            transition: all 0.3s;
+            font-size: 14px;
+            color: #666;
+        }
+
+        .tab.active {
+            background: #667eea;
+            color: white;
+        }
+
+        .tab-content {
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
         }
 
         .display {
@@ -114,50 +145,142 @@
         .func:hover {
             background: #3dbdb5;
         }
+
+        .category-select {
+            width: 100%;
+            padding: 12px;
+            border-radius: 8px;
+            border: none;
+            background: #f7f9fc;
+            font-size: 14px;
+            margin-bottom: 15px;
+        }
+
+        .conv-row {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 10px;
+        }
+
+        .conv-box {
+            flex: 1;
+        }
+
+        .conv-box label {
+            display: block;
+            color: #888;
+            font-size: 12px;
+            margin-bottom: 4px;
+        }
+
+        .conv-box select, .conv-box input {
+            width: 100%;
+            padding: 10px;
+            border-radius: 8px;
+            border: none;
+            background: #f7f9fc;
+            font-size: 14px;
+        }
+
+        .conv-arrow {
+            color: #667eea;
+            font-size: 20px;
+            text-align: center;
+            margin: 10px 0;
+        }
+
+        .conv-result {
+            background: #f7f9fc;
+            border-radius: 10px;
+            padding: 15px;
+            text-align: right;
+            font-size: 28px;
+            font-weight: bold;
+            color: #333;
+            margin-top: 15px;
+        }
     </style>
 </head>
 <body>
-    <div class="calculator">
-        <div class="display">
-            <div class="previous" id="previous"></div>
-            <div class="current" id="current">0</div>
+    <div class="container">
+        <div class="tabs">
+            <div class="tab active" onclick="switchTab('calc')">科学计算器</div>
+            <div class="tab" onclick="switchTab('conv')">换算计算器</div>
         </div>
-        <div class="buttons">
-            <button class="clear" onclick="clearAll()">AC</button>
-            <button class="func" onclick="appendNumber('(')">(</button>
-            <button class="func" onclick="appendNumber(')')">)</button>
-            <button class="func" onclick="calculateFunc('sqrt')">√</button>
-            <button class="func" onclick="calculateFunc('pow')">x²</button>
 
-            <button class="func" onclick="calculateFunc('sin')">sin</button>
-            <button class="func" onclick="calculateFunc('cos')">cos</button>
-            <button class="func" onclick="calculateFunc('tan')">tan</button>
-            <button class="func" onclick="calculateFunc('log')">log</button>
-            <button class="func" onclick="calculateFunc('ln')">ln</button>
+        <div id="calc" class="tab-content active">
+            <div class="display">
+                <div class="previous" id="previous"></div>
+                <div class="current" id="current">0</div>
+            </div>
+            <div class="buttons">
+                <button class="clear" onclick="clearAll()">AC</button>
+                <button class="func" onclick="appendNumber('(')">(</button>
+                <button class="func" onclick="appendNumber(')')">)</button>
+                <button class="func" onclick="calculateFunc('sqrt')">√</button>
+                <button class="func" onclick="calculateFunc('pow')">x²</button>
 
-            <button class="operator" onclick="appendNumber('7')">7</button>
-            <button class="operator" onclick="appendNumber('8')">8</button>
-            <button class="operator" onclick="appendNumber('9')">9</button>
-            <button class="operator" onclick="appendOperator('/')">÷</button>
-            <button class="func" onclick="appendOperator('**')">xʸ</button>
+                <button class="func" onclick="calculateFunc('sin')">sin</button>
+                <button class="func" onclick="calculateFunc('cos')">cos</button>
+                <button class="func" onclick="calculateFunc('tan')">tan</button>
+                <button class="func" onclick="calculateFunc('log')">log</button>
+                <button class="func" onclick="calculateFunc('ln')">ln</button>
 
-            <button class="operator" onclick="appendNumber('4')">4</button>
-            <button class="operator" onclick="appendNumber('5')">5</button>
-            <button class="operator" onclick="appendNumber('6')">6</button>
-            <button class="operator" onclick="appendOperator('*')">×</button>
-            <button class="func" onclick="calculateFunc('pi')">π</button>
+                <button class="operator" onclick="appendNumber('7')">7</button>
+                <button class="operator" onclick="appendNumber('8')">8</button>
+                <button class="operator" onclick="appendNumber('9')">9</button>
+                <button class="operator" onclick="appendOperator('/')">÷</button>
+                <button class="func" onclick="appendOperator('**')">xʸ</button>
 
-            <button class="operator" onclick="appendNumber('1')">1</button>
-            <button class="operator" onclick="appendNumber('2')">2</button>
-            <button class="operator" onclick="appendNumber('3')">3</button>
-            <button class="operator" onclick="appendOperator('-')">−</button>
-            <button class="func" onclick="calculateFunc('e')">e</button>
+                <button class="operator" onclick="appendNumber('4')">4</button>
+                <button class="operator" onclick="appendNumber('5')">5</button>
+                <button class="operator" onclick="appendNumber('6')">6</button>
+                <button class="operator" onclick="appendOperator('*')">×</button>
+                <button class="func" onclick="calculateFunc('pi')">π</button>
 
-            <button class="operator" onclick="appendNumber('0')">0</button>
-            <button class="operator" onclick="appendNumber('.')">.</button>
-            <button class="func" onclick="deleteDigit()">⌫</button>
-            <button class="operator" onclick="appendOperator('+')">+</button>
-            <button class="equal" onclick="calculate()">=</button>
+                <button class="operator" onclick="appendNumber('1')">1</button>
+                <button class="operator" onclick="appendNumber('2')">2</button>
+                <button class="operator" onclick="appendNumber('3')">3</button>
+                <button class="operator" onclick="appendOperator('-')">−</button>
+                <button class="func" onclick="calculateFunc('e')">e</button>
+
+                <button class="operator" onclick="appendNumber('0')">0</button>
+                <button class="operator" onclick="appendNumber('.')">.</button>
+                <button class="func" onclick="deleteDigit()">⌫</button>
+                <button class="operator" onclick="appendOperator('+')">+</button>
+                <button class="equal" onclick="calculate()">=</button>
+            </div>
+        </div>
+
+        <div id="conv" class="tab-content">
+            <select class="category-select" id="convCategory" onchange="updateConverterUnits()">
+                <option value="length">长度</option>
+                <option value="area">面积</option>
+                <option value="weight">重量</option>
+                <option value="temperature">温度</option>
+                <option value="currency">汇率</option>
+            </select>
+
+            <div class="conv-row">
+                <div class="conv-box">
+                    <label>从</label>
+                    <select id="fromUnit"></select>
+                </div>
+            </div>
+
+            <input type="number" id="convInput" placeholder="输入数值" oninput="convert()" style="width: 100%; padding: 12px; border-radius: 8px; border: none; background: #f7f9fc; font-size: 14px; margin-bottom: 10px;">
+
+            <div class="conv-arrow">↓</div>
+
+            <div class="conv-row">
+                <div class="conv-box">
+                    <label>转换为</label>
+                    <select id="toUnit" onchange="convert()"></select>
+                </div>
+            </div>
+
+            <div class="conv-result" id="convResult">0</div>
         </div>
     </div>
 
@@ -166,6 +289,66 @@
         let previous = '';
         let operator = null;
         let shouldResetScreen = false;
+
+        const units = {
+            length: [
+                { code: 'mm', name: '毫米' },
+                { code: 'cm', name: '厘米' },
+                { code: 'm', name: '米' },
+                { code: 'km', name: '千米' },
+                { code: 'in', name: '英寸' },
+                { code: 'ft', name: '英尺' },
+                { code: 'yd', name: '码' },
+                { code: 'mi', name: '英里' }
+            ],
+            area: [
+                { code: 'mm²', name: '平方毫米' },
+                { code: 'cm²', name: '平方厘米' },
+                { code: 'm²', name: '平方米' },
+                { code: 'km²', name: '平方千米' },
+                { code: 'in²', name: '平方英寸' },
+                { code: 'ft²', name: '平方英尺' },
+                { code: 'yd²', name: '平方码' },
+                { code: 'acre', name: '英亩' },
+                { code: 'ha', name: '公顷' }
+            ],
+            weight: [
+                { code: 'mg', name: '毫克' },
+                { code: 'g', name: '克' },
+                { code: 'kg', name: '千克' },
+                { code: 't', name: '吨' },
+                { code: 'oz', name: '盎司' },
+                { code: 'lb', name: '磅' },
+                { code: 'st', name: '英石' }
+            ],
+            temperature: [
+                { code: 'C', name: '摄氏度' },
+                { code: 'F', name: '华氏度' },
+                { code: 'K', name: '开尔文' }
+            ],
+            currency: [
+                { code: 'CNY', name: '人民币' },
+                { code: 'USD', name: '美元' },
+                { code: 'EUR', name: '欧元' },
+                { code: 'JPY', name: '日元' },
+                { code: 'GBP', name: '英镑' },
+                { code: 'HKD', name: '港币' },
+                { code: 'KRW', name: '韩元' }
+            ]
+        };
+
+        function switchTab(tab) {
+            document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+            document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+            if (tab === 'calc') {
+                document.querySelector('.tab:nth-child(1)').classList.add('active');
+                document.getElementById('calc').classList.add('active');
+            } else {
+                document.querySelector('.tab:nth-child(2)').classList.add('active');
+                document.getElementById('conv').classList.add('active');
+                updateConverterUnits();
+            }
+        }
 
         function updateDisplay() {
             document.getElementById('current').textContent = current;
@@ -178,9 +361,7 @@
                 shouldResetScreen = false;
             }
             if (num === '.' && current.includes('.')) return;
-            if (num === '(' || num === ')') {
-                current += num;
-            } else if (current === '0' && num !== '.') {
+            if (current === '0' && num !== '.') {
                 current = num;
             } else {
                 current += num;
@@ -190,17 +371,12 @@
 
         function appendOperator(op) {
             if (op === '**') {
-                if (shouldResetScreen) {
-                    current = current;
-                    shouldResetScreen = false;
-                }
                 previous = current;
                 operator = '^';
                 shouldResetScreen = true;
                 updateDisplay();
                 return;
             }
-
             if (operator && !shouldResetScreen) {
                 calculate();
             }
@@ -212,35 +388,16 @@
 
         function calculateFunc(func) {
             const val = parseFloat(current);
-
             switch(func) {
-                case 'sqrt':
-                    current = Math.sqrt(val).toString();
-                    break;
-                case 'pow':
-                    current = (val * val).toString();
-                    break;
-                case 'sin':
-                    current = Math.sin(val * Math.PI / 180).toString();
-                    break;
-                case 'cos':
-                    current = Math.cos(val * Math.PI / 180).toString();
-                    break;
-                case 'tan':
-                    current = Math.tan(val * Math.PI / 180).toString();
-                    break;
-                case 'log':
-                    current = Math.log10(val).toString();
-                    break;
-                case 'ln':
-                    current = Math.log(val).toString();
-                    break;
-                case 'pi':
-                    current = Math.PI.toString();
-                    break;
-                case 'e':
-                    current = Math.E.toString();
-                    break;
+                case 'sqrt': current = Math.sqrt(val).toString(); break;
+                case 'pow': current = (val * val).toString(); break;
+                case 'sin': current = Math.sin(val * Math.PI / 180).toString(); break;
+                case 'cos': current = Math.cos(val * Math.PI / 180).toString(); break;
+                case 'tan': current = Math.tan(val * Math.PI / 180).toString(); break;
+                case 'log': current = Math.log10(val).toString(); break;
+                case 'ln': current = Math.log(val).toString(); break;
+                case 'pi': current = Math.PI.toString(); break;
+                case 'e': current = Math.E.toString(); break;
             }
             shouldResetScreen = true;
             updateDisplay();
@@ -248,31 +405,16 @@
 
         function calculate() {
             if (!operator || shouldResetScreen) return;
-
             const prev = parseFloat(previous);
             const curr = parseFloat(current);
             let result;
-
             switch (operator) {
-                case '+':
-                    result = prev + curr;
-                    break;
-                case '-':
-                    result = prev - curr;
-                    break;
-                case '*':
-                    result = prev * curr;
-                    break;
-                case '/':
-                    result = curr === 0 ? 'Error' : prev / curr;
-                    break;
-                case '^':
-                    result = Math.pow(prev, curr);
-                    break;
-                default:
-                    return;
+                case '+': result = prev + curr; break;
+                case '-': result = prev - curr; break;
+                case '*': result = prev * curr; break;
+                case '/': result = curr === 0 ? 'Error' : prev / curr; break;
+                case '^': result = Math.pow(prev, curr); break;
             }
-
             current = result.toString();
             operator = null;
             previous = '';
@@ -289,13 +431,67 @@
         }
 
         function deleteDigit() {
-            if (shouldResetScreen) {
-                return;
-            }
+            if (shouldResetScreen) return;
             current = current.toString().slice(0, -1);
             if (current === '' || current === '-') current = '0';
             updateDisplay();
         }
+
+        function updateConverterUnits() {
+            const category = document.getElementById('convCategory').value;
+            const unitList = units[category];
+            const fromSelect = document.getElementById('fromUnit');
+            const toSelect = document.getElementById('toUnit');
+            fromSelect.innerHTML = '';
+            toSelect.innerHTML = '';
+            unitList.forEach((unit) => {
+                fromSelect.innerHTML += `<option value="${unit.code}">${unit.name} (${unit.code})</option>`;
+                toSelect.innerHTML += `<option value="${unit.code}">${unit.name} (${unit.code})</option>`;
+            });
+            if (unitList.length > 1) toSelect.selectedIndex = 1;
+            convert();
+        }
+
+        function convert() {
+            const category = document.getElementById('convCategory').value;
+            const fromUnit = document.getElementById('fromUnit').value;
+            const toUnit = document.getElementById('toUnit').value;
+            const inputValue = parseFloat(document.getElementById('convInput').value) || 0;
+            let result = 0;
+
+            switch (category) {
+                case 'length':
+                    const metersL = inputValue * ({'mm': 0.001, 'cm': 0.01, 'm': 1, 'km': 1000, 'in': 0.0254, 'ft': 0.3048, 'yd': 0.9144, 'mi': 1609.344})[fromUnit];
+                    result = metersL / ({'mm': 0.001, 'cm': 0.01, 'm': 1, 'km': 1000, 'in': 0.0254, 'ft': 0.3048, 'yd': 0.9144, 'mi': 1609.344})[toUnit];
+                    break;
+                case 'area':
+                    const sqM = inputValue * ({'mm²': 0.000001, 'cm²': 0.0001, 'm²': 1, 'km²': 1000000, 'in²': 0.00064516, 'ft²': 0.092903, 'yd²': 0.836127, 'acre': 4046.8564, 'ha': 10000})[fromUnit];
+                    result = sqM / ({'mm²': 0.000001, 'cm²': 0.0001, 'm²': 1, 'km²': 1000000, 'in²': 0.00064516, 'ft²': 0.092903, 'yd²': 0.836127, 'acre': 4046.8564, 'ha': 10000})[toUnit];
+                    break;
+                case 'weight':
+                    const kg = inputValue * ({'mg': 0.000001, 'g': 0.001, 'kg': 1, 't': 1000, 'oz': 0.0283495, 'lb': 0.453592, 'st': 6.35029})[fromUnit];
+                    result = kg / ({'mg': 0.000001, 'g': 0.001, 'kg': 1, 't': 1000, 'oz': 0.0283495, 'lb': 0.453592, 'st': 6.35029})[toUnit];
+                    break;
+                case 'temperature':
+                    let celsius = fromUnit === 'C' ? inputValue : fromUnit === 'F' ? (inputValue - 32) * 5 / 9 : inputValue - 273.15;
+                    result = toUnit === 'C' ? celsius : toUnit === 'F' ? celsius * 9 / 5 + 32 : celsius + 273.15;
+                    break;
+                case 'currency':
+                    const rates = { 'CNY': 1, 'USD': 7.24, 'EUR': 7.85, 'JPY': 0.048, 'GBP': 9.12, 'HKD': 0.93, 'KRW': 0.0054 };
+                    result = (inputValue * (rates[fromUnit] || 1)) / (rates[toUnit] || 1);
+                    break;
+            }
+            document.getElementById('convResult').textContent = formatResult(result);
+        }
+
+        function formatResult(value) {
+            if (Math.abs(value) < 1e10 && value === parseFloat(value.toFixed(6))) {
+                return parseFloat(value.toFixed(6)).toString();
+            }
+            return value.toString();
+        }
+
+        updateConverterUnits();
     </script>
 </body>
 </html>
