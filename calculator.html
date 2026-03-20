@@ -1,0 +1,301 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>科学计算器</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Arial', sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        }
+
+        .calculator {
+            background: #fff;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            padding: 20px;
+            width: 380px;
+        }
+
+        .display {
+            background: #f7f9fc;
+            border-radius: 10px;
+            padding: 15px 20px;
+            text-align: right;
+            margin-bottom: 15px;
+        }
+
+        .previous {
+            color: #888;
+            font-size: 14px;
+            min-height: 20px;
+        }
+
+        .current {
+            color: #333;
+            font-size: 32px;
+            font-weight: bold;
+            min-height: 45px;
+            word-wrap: break-word;
+            word-break: break-all;
+        }
+
+        .buttons {
+            display: grid;
+            grid-template-columns: repeat(5, 1fr);
+            gap: 8px;
+        }
+
+        button {
+            padding: 12px 8px;
+            font-size: 14px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.2s;
+            background: #f7f9fc;
+            color: #333;
+        }
+
+        button:hover {
+            background: #e1e4e8;
+            transform: scale(1.05);
+        }
+
+        button:active {
+            transform: scale(0.95);
+        }
+
+        .operator {
+            background: #667eea;
+            color: white;
+        }
+
+        .operator:hover {
+            background: #5568d3;
+        }
+
+        .equal {
+            background: #764ba2;
+            color: white;
+            grid-column: span 2;
+        }
+
+        .equal:hover {
+            background: #634086;
+        }
+
+        .clear {
+            background: #ff6b6b;
+            color: white;
+        }
+
+        .clear:hover {
+            background: #ee5a5a;
+        }
+
+        .func {
+            background: #4ecdc4;
+            color: white;
+            font-size: 12px;
+        }
+
+        .func:hover {
+            background: #3dbdb5;
+        }
+    </style>
+</head>
+<body>
+    <div class="calculator">
+        <div class="display">
+            <div class="previous" id="previous"></div>
+            <div class="current" id="current">0</div>
+        </div>
+        <div class="buttons">
+            <button class="clear" onclick="clearAll()">AC</button>
+            <button class="func" onclick="appendNumber('(')">(</button>
+            <button class="func" onclick="appendNumber(')')">)</button>
+            <button class="func" onclick="calculateFunc('sqrt')">√</button>
+            <button class="func" onclick="calculateFunc('pow')">x²</button>
+
+            <button class="func" onclick="calculateFunc('sin')">sin</button>
+            <button class="func" onclick="calculateFunc('cos')">cos</button>
+            <button class="func" onclick="calculateFunc('tan')">tan</button>
+            <button class="func" onclick="calculateFunc('log')">log</button>
+            <button class="func" onclick="calculateFunc('ln')">ln</button>
+
+            <button class="operator" onclick="appendNumber('7')">7</button>
+            <button class="operator" onclick="appendNumber('8')">8</button>
+            <button class="operator" onclick="appendNumber('9')">9</button>
+            <button class="operator" onclick="appendOperator('/')">÷</button>
+            <button class="func" onclick="appendOperator('**')">xʸ</button>
+
+            <button class="operator" onclick="appendNumber('4')">4</button>
+            <button class="operator" onclick="appendNumber('5')">5</button>
+            <button class="operator" onclick="appendNumber('6')">6</button>
+            <button class="operator" onclick="appendOperator('*')">×</button>
+            <button class="func" onclick="calculateFunc('pi')">π</button>
+
+            <button class="operator" onclick="appendNumber('1')">1</button>
+            <button class="operator" onclick="appendNumber('2')">2</button>
+            <button class="operator" onclick="appendNumber('3')">3</button>
+            <button class="operator" onclick="appendOperator('-')">−</button>
+            <button class="func" onclick="calculateFunc('e')">e</button>
+
+            <button class="operator" onclick="appendNumber('0')">0</button>
+            <button class="operator" onclick="appendNumber('.')">.</button>
+            <button class="func" onclick="deleteDigit()">⌫</button>
+            <button class="operator" onclick="appendOperator('+')">+</button>
+            <button class="equal" onclick="calculate()">=</button>
+        </div>
+    </div>
+
+    <script>
+        let current = '0';
+        let previous = '';
+        let operator = null;
+        let shouldResetScreen = false;
+
+        function updateDisplay() {
+            document.getElementById('current').textContent = current;
+            document.getElementById('previous').textContent = previous + (operator ? ' ' + operator : '');
+        }
+
+        function appendNumber(num) {
+            if (shouldResetScreen) {
+                current = '';
+                shouldResetScreen = false;
+            }
+            if (num === '.' && current.includes('.')) return;
+            if (num === '(' || num === ')') {
+                current += num;
+            } else if (current === '0' && num !== '.') {
+                current = num;
+            } else {
+                current += num;
+            }
+            updateDisplay();
+        }
+
+        function appendOperator(op) {
+            if (op === '**') {
+                if (shouldResetScreen) {
+                    current = current;
+                    shouldResetScreen = false;
+                }
+                previous = current;
+                operator = '^';
+                shouldResetScreen = true;
+                updateDisplay();
+                return;
+            }
+
+            if (operator && !shouldResetScreen) {
+                calculate();
+            }
+            previous = current;
+            operator = op;
+            shouldResetScreen = true;
+            updateDisplay();
+        }
+
+        function calculateFunc(func) {
+            const val = parseFloat(current);
+
+            switch(func) {
+                case 'sqrt':
+                    current = Math.sqrt(val).toString();
+                    break;
+                case 'pow':
+                    current = (val * val).toString();
+                    break;
+                case 'sin':
+                    current = Math.sin(val * Math.PI / 180).toString();
+                    break;
+                case 'cos':
+                    current = Math.cos(val * Math.PI / 180).toString();
+                    break;
+                case 'tan':
+                    current = Math.tan(val * Math.PI / 180).toString();
+                    break;
+                case 'log':
+                    current = Math.log10(val).toString();
+                    break;
+                case 'ln':
+                    current = Math.log(val).toString();
+                    break;
+                case 'pi':
+                    current = Math.PI.toString();
+                    break;
+                case 'e':
+                    current = Math.E.toString();
+                    break;
+            }
+            shouldResetScreen = true;
+            updateDisplay();
+        }
+
+        function calculate() {
+            if (!operator || shouldResetScreen) return;
+
+            const prev = parseFloat(previous);
+            const curr = parseFloat(current);
+            let result;
+
+            switch (operator) {
+                case '+':
+                    result = prev + curr;
+                    break;
+                case '-':
+                    result = prev - curr;
+                    break;
+                case '*':
+                    result = prev * curr;
+                    break;
+                case '/':
+                    result = curr === 0 ? 'Error' : prev / curr;
+                    break;
+                case '^':
+                    result = Math.pow(prev, curr);
+                    break;
+                default:
+                    return;
+            }
+
+            current = result.toString();
+            operator = null;
+            previous = '';
+            shouldResetScreen = true;
+            updateDisplay();
+        }
+
+        function clearAll() {
+            current = '0';
+            previous = '';
+            operator = null;
+            shouldResetScreen = false;
+            updateDisplay();
+        }
+
+        function deleteDigit() {
+            if (shouldResetScreen) {
+                return;
+            }
+            current = current.toString().slice(0, -1);
+            if (current === '' || current === '-') current = '0';
+            updateDisplay();
+        }
+    </script>
+</body>
+</html>
